@@ -2,7 +2,6 @@ package com.interview.canva.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.interview.canva.dto.CreateUserRequest;
-import com.interview.canva.dto.GetUserResponse;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
