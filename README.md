@@ -56,10 +56,16 @@ java -cp build/libs/canva-0.0.1-SNAPSHOT.jar com.interview.canva.TextRenderMain 
 }
 ```
 
+**Validation:**
+
+- `fontUrl` and `text` are required and cannot be null or empty
+- Uses Java Bean Validation with `@NotNull` and `@NotBlank` annotations
+
 **Response:**
 
 - **Success (200)**: PNG image bytes with `image/png` content type
-- **Error (400)**: Error message as plain text
+- **Error (400)**: Error message as plain text for validation or service errors
+- **Error (500)**: Unexpected error message as plain text
 
 **Example using curl:**
 

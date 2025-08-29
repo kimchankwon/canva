@@ -34,10 +34,9 @@ public class TextRenderServiceTest {
         String fontUrl = "https://font-public.canva.com/YAFdJkVWBPo/0/MoreSugar-Regular.62992e429acdec5e01c3db.6f7a950ef2bb9f1314d37ac4a660925e.otf";
         String text = "";
         
-        byte[] result = textRenderService.renderText(fontUrl, text);
-        
-        assertNotNull(result);
-        assertTrue(result.length > 0);
+        assertThrows(TextRenderException.class, () -> {
+            textRenderService.renderText(fontUrl, text);
+        });
     }
 
     @Test
@@ -52,11 +51,13 @@ public class TextRenderServiceTest {
     }
 
     @Test
-    public void testRenderTextWithInvalidFontUrl() {
-        String fontUrl = "https://invalid-url-that-does-not-exist.com/font.otf";
+    public void testRenderTextWithInvalidFontFormat() {
+        // Use a valid URL but with invalid font content
+        String fontUrl = "https://httpbin.org/bytes/100"; // Returns random bytes, not a font
         String text = "Hello World";
         
-        assertThrows(TextRenderException.class, () -> {
+        // This should fail at the font loading stage
+        assertThrows(FontLoadException.class, () -> {
             textRenderService.renderText(fontUrl, text);
         });
     }

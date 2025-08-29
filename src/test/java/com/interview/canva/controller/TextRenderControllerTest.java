@@ -1,12 +1,13 @@
 package com.interview.canva.controller;
 
 import com.interview.canva.TextRenderService;
+import com.interview.canva.dto.RenderRequest;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
 import static org.mockito.ArgumentMatchers.anyString;
@@ -20,7 +21,7 @@ public class TextRenderControllerTest {
     @Autowired
     private MockMvc mockMvc;
 
-    @MockBean
+    @MockitoBean
     private TextRenderService textRenderService;
 
     @Autowired
@@ -33,7 +34,7 @@ public class TextRenderControllerTest {
         when(textRenderService.renderText(anyString(), anyString())).thenReturn(mockImageBytes);
 
         // Create request body
-        TextRenderController.RenderRequest request = new TextRenderController.RenderRequest(
+        RenderRequest request = new RenderRequest(
             "https://font-public.canva.com/YAFdJkVWBPo/0/MoreSugar-Regular.62992e429acdec5e01c3db.6f7a950ef2bb9f1314d37ac4a660925e.otf",
             "Hello World"
         );
@@ -56,10 +57,11 @@ public class TextRenderControllerTest {
     }
 
     @Test
-    public void testRenderTextWithNullValues() throws Exception {
-        TextRenderController.RenderRequest request = new TextRenderController.RenderRequest();
-        request.setFontUrl(null);
-        request.setText(null);
+    public void testRenderTextWithEmptyText() throws Exception {
+        RenderRequest request = new RenderRequest(
+            "https://font-public.canva.com/YAFdJkVWBPo/0/MoreSugar-Regular.62992e429acdec5e01c3db.6f7a950ef2bb9f1314d37ac4a660925e.otf",
+            ""
+        );
 
         mockMvc.perform(post("/api/render")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -69,11 +71,11 @@ public class TextRenderControllerTest {
 
     @Test
     public void testRenderTextWithInvalidFontUrl() throws Exception {
-        // Mock the service to throw an exception
+        // Mock the service to throw a FontDownloadException
         when(textRenderService.renderText(anyString(), anyString()))
-            .thenThrow(new RuntimeException("Invalid font URL"));
+            .thenThrow(new com.interview.canva.FontDownloadException("Invalid font URL"));
 
-        TextRenderController.RenderRequest request = new TextRenderController.RenderRequest(
+        RenderRequest request = new RenderRequest(
             "https://invalid-url.com/font.otf",
             "Hello World"
         );

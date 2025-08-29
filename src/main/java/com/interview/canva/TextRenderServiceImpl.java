@@ -26,13 +26,12 @@ public class TextRenderServiceImpl implements TextRenderService {
         if (text == null) {
             throw new TextRenderException("Text cannot be null");
         }
-        
-        try {
-            Font font = getOrLoadFont(fontUrl);
-            return generateTextImage(font, text);
-        } catch (Exception e) {
-            throw new TextRenderException("Failed to render text: " + e.getMessage(), e);
+        if (text.trim().isEmpty()) {
+            throw new TextRenderException("Text cannot be empty");
         }
+        
+        Font font = getOrLoadFont(fontUrl);
+        return generateTextImage(font, text);
     }
     
     private Font getOrLoadFont(String fontUrl) {
@@ -69,11 +68,6 @@ public class TextRenderServiceImpl implements TextRenderService {
     }
     
     private byte[] generateTextImage(Font font, String text) {
-        // Handle empty text case
-        if (text == null || text.isEmpty()) {
-            text = " "; // Use space to create minimal image
-        }
-        
         // Create a temporary graphics context to measure text
         BufferedImage tempImage = new BufferedImage(1, 1, BufferedImage.TYPE_INT_ARGB);
         Graphics2D tempGraphics = tempImage.createGraphics();
